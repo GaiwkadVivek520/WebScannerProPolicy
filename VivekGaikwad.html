@@ -1,0 +1,846 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vivek Gaikwad — Rise of Rebels</title>
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Cabinet+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+
+:root{
+  --bg:#050810;
+  --bg2:#080d1a;
+  --surface:rgba(255,255,255,0.04);
+  --surface-hover:rgba(255,255,255,0.07);
+  --border:rgba(255,255,255,0.08);
+  --border-hover:rgba(255,255,255,0.18);
+  --text:#f0f2ff;
+  --text-muted:rgba(240,242,255,0.5);
+  --text-dim:rgba(240,242,255,0.28);
+  --aurora1:#7c5cfc;
+  --aurora2:#00d4aa;
+  --aurora3:#ff6b6b;
+  --aurora4:#ffd93d;
+  --glow1:rgba(124,92,252,0.35);
+  --glow2:rgba(0,212,170,0.25);
+}
+
+html{scroll-behavior:smooth;font-size:16px;}
+
+body{
+  font-family:'Cabinet Grotesk',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  overflow-x:hidden;
+  cursor:none;
+}
+
+/* CUSTOM CURSOR */
+.cursor{
+  width:10px;height:10px;
+  background:var(--aurora2);
+  border-radius:50%;
+  position:fixed;top:0;left:0;
+  pointer-events:none;z-index:9999;
+  transform:translate(-50%,-50%);
+  transition:transform 0.1s,width 0.3s,height 0.3s,background 0.3s;
+  mix-blend-mode:screen;
+}
+.cursor-ring{
+  width:36px;height:36px;
+  border:1.5px solid rgba(124,92,252,0.5);
+  border-radius:50%;
+  position:fixed;top:0;left:0;
+  pointer-events:none;z-index:9998;
+  transform:translate(-50%,-50%);
+  transition:transform 0.18s ease,width 0.3s,height 0.3s,border-color 0.3s;
+}
+.cursor.hovering{width:18px;height:18px;background:var(--aurora1);}
+.cursor-ring.hovering{width:52px;height:52px;border-color:var(--aurora1);}
+
+/* NOISE OVERLAY */
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:1;opacity:0.4;
+}
+
+/* AURORA BG */
+.aurora-bg{
+  position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;
+}
+.aurora-orb{
+  position:absolute;border-radius:50%;filter:blur(120px);animation:drift 18s ease-in-out infinite alternate;
+}
+.orb1{width:700px;height:700px;background:var(--glow1);top:-200px;left:-200px;animation-delay:0s;}
+.orb2{width:500px;height:500px;background:var(--glow2);bottom:-150px;right:-100px;animation-delay:-6s;}
+.orb3{width:400px;height:400px;background:rgba(255,107,107,0.12);top:40%;left:50%;animation-delay:-12s;}
+@keyframes drift{
+  0%{transform:translate(0,0) scale(1);}
+  100%{transform:translate(60px,40px) scale(1.08);}
+}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1.2rem 3rem;
+  background:rgba(5,8,16,0.6);
+  backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--border);
+}
+.nav-logo{
+  font-family:'Clash Display',sans-serif;
+  font-weight:700;font-size:1.15rem;
+  background:linear-gradient(135deg,#fff 30%,var(--aurora1));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  text-decoration:none;letter-spacing:-0.02em;
+}
+.nav-center{display:flex;gap:0.25rem;list-style:none;}
+.nav-center a{
+  font-size:0.82rem;font-weight:500;letter-spacing:0.04em;
+  text-decoration:none;color:var(--text-muted);
+  padding:0.45rem 1rem;border-radius:100px;
+  transition:color 0.2s,background 0.2s;
+}
+.nav-center a:hover{color:var(--text);background:var(--surface);}
+.nav-cta{
+  display:inline-flex;align-items:center;gap:0.5rem;
+  padding:0.55rem 1.3rem;
+  background:linear-gradient(135deg,var(--aurora1),var(--aurora2));
+  border:none;border-radius:100px;
+  font-family:'Cabinet Grotesk',sans-serif;
+  font-size:0.82rem;font-weight:700;color:#fff;
+  text-decoration:none;cursor:none;
+  box-shadow:0 0 24px rgba(124,92,252,0.4);
+  transition:box-shadow 0.3s,transform 0.2s;
+}
+.nav-cta:hover{box-shadow:0 0 40px rgba(124,92,252,0.6);transform:translateY(-1px);}
+
+/* SECTIONS WRAPPER */
+.page{position:relative;z-index:2;}
+
+/* HERO */
+.hero{
+  min-height:100vh;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  text-align:center;
+  padding:7rem 2rem 5rem;
+}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:0.6rem;
+  background:rgba(124,92,252,0.12);
+  border:1px solid rgba(124,92,252,0.3);
+  border-radius:100px;
+  padding:0.4rem 1.1rem;
+  font-size:0.78rem;font-weight:500;
+  color:rgba(200,190,255,0.9);
+  letter-spacing:0.06em;
+  margin-bottom:2.2rem;
+  animation:fadeUp 0.7s 0.1s both;
+}
+.eyebrow-dot{width:6px;height:6px;border-radius:50%;background:var(--aurora2);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.5;transform:scale(0.8);}}
+
+.hero-name{
+  font-family:'Clash Display',sans-serif;
+  font-size:clamp(3.5rem,8vw,8rem);
+  font-weight:700;line-height:0.95;
+  letter-spacing:-0.04em;
+  margin-bottom:0.3rem;
+  animation:fadeUp 0.7s 0.2s both;
+}
+.hero-name .line1{
+  display:block;
+  background:linear-gradient(135deg,#fff 20%,rgba(200,190,255,0.8));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hero-name .line2{
+  display:block;
+  background:linear-gradient(135deg,var(--aurora1),var(--aurora2),var(--aurora4));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  background-size:200%;
+  animation:fadeUp 0.7s 0.3s both, gradShift 4s ease-in-out infinite alternate;
+}
+@keyframes gradShift{0%{background-position:0%}100%{background-position:100%}}
+
+.hero-brand{
+  font-family:'Clash Display',sans-serif;
+  font-size:clamp(1rem,2vw,1.5rem);
+  font-weight:400;
+  color:var(--text-muted);
+  letter-spacing:0.25em;
+  text-transform:uppercase;
+  margin-bottom:2rem;
+  animation:fadeUp 0.7s 0.35s both;
+}
+.hero-desc{
+  font-size:1.1rem;font-weight:300;
+  color:var(--text-muted);line-height:1.75;
+  max-width:560px;margin:0 auto 3rem;
+  animation:fadeUp 0.7s 0.45s both;
+}
+.hero-desc strong{color:var(--text);font-weight:500;}
+
+.hero-btns{
+  display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;
+  animation:fadeUp 0.7s 0.55s both;
+}
+.btn-glow{
+  display:inline-flex;align-items:center;gap:0.5rem;
+  padding:0.9rem 2.2rem;
+  background:linear-gradient(135deg,var(--aurora1),var(--aurora2));
+  border:none;border-radius:100px;
+  font-family:'Cabinet Grotesk',sans-serif;
+  font-size:0.95rem;font-weight:700;color:#fff;
+  text-decoration:none;cursor:none;
+  box-shadow:0 0 40px rgba(124,92,252,0.5),0 0 80px rgba(0,212,170,0.2);
+  transition:transform 0.2s,box-shadow 0.3s;
+}
+.btn-glow:hover{transform:translateY(-3px);box-shadow:0 8px 60px rgba(124,92,252,0.7),0 0 100px rgba(0,212,170,0.3);}
+.btn-ghost{
+  display:inline-flex;align-items:center;gap:0.5rem;
+  padding:0.9rem 2.2rem;
+  background:var(--surface);
+  border:1px solid var(--border-hover);
+  border-radius:100px;
+  font-family:'Cabinet Grotesk',sans-serif;
+  font-size:0.95rem;font-weight:500;color:var(--text);
+  text-decoration:none;cursor:none;
+  backdrop-filter:blur(12px);
+  transition:background 0.2s,border-color 0.2s,transform 0.2s;
+}
+.btn-ghost:hover{background:var(--surface-hover);border-color:rgba(255,255,255,0.3);transform:translateY(-3px);}
+
+/* SCROLL INDICATOR */
+.scroll-hint{
+  margin-top:4rem;
+  display:flex;flex-direction:column;align-items:center;gap:0.5rem;
+  color:var(--text-dim);font-size:0.75rem;letter-spacing:0.08em;text-transform:uppercase;
+  animation:fadeUp 0.7s 0.8s both;
+}
+.scroll-line{width:1px;height:48px;background:linear-gradient(to bottom,var(--aurora1),transparent);animation:scrollPulse 2s ease-in-out infinite;}
+@keyframes scrollPulse{0%,100%{opacity:0.3;transform:scaleY(1);}50%{opacity:1;transform:scaleY(1.15);}}
+
+/* STATS */
+.stats{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  margin:0 2rem;gap:1.5rem;
+  max-width:900px;margin:0 auto 6rem;
+  padding:0 2rem;
+  animation:fadeUp 0.7s 0.6s both;
+}
+.stat-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:2rem 1.5rem;
+  text-align:center;
+  backdrop-filter:blur(12px);
+  transition:border-color 0.3s,background 0.3s,transform 0.3s;
+  position:relative;overflow:hidden;
+}
+.stat-card::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,transparent 60%,rgba(124,92,252,0.06));
+  opacity:0;transition:opacity 0.3s;
+}
+.stat-card:hover{border-color:rgba(124,92,252,0.4);background:var(--surface-hover);transform:translateY(-4px);}
+.stat-card:hover::before{opacity:1;}
+.stat-num{
+  font-family:'Clash Display',sans-serif;
+  font-size:2.8rem;font-weight:700;
+  background:linear-gradient(135deg,var(--aurora1),var(--aurora2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  line-height:1;margin-bottom:0.4rem;
+}
+.stat-label{font-size:0.82rem;font-weight:400;color:var(--text-muted);}
+
+/* SECTION GENERIC */
+.section{padding:6rem 2rem;max-width:1100px;margin:0 auto;}
+.section-label{
+  display:inline-flex;align-items:center;gap:0.5rem;
+  font-size:0.72rem;font-weight:700;
+  color:var(--aurora2);letter-spacing:0.12em;text-transform:uppercase;
+  margin-bottom:1.2rem;
+}
+.section-label::before{content:'';width:24px;height:1px;background:var(--aurora2);}
+.section-title{
+  font-family:'Clash Display',sans-serif;
+  font-size:clamp(2rem,4vw,3.5rem);
+  font-weight:600;letter-spacing:-0.03em;line-height:1.05;
+  margin-bottom:1.2rem;
+}
+.section-title span{
+  background:linear-gradient(135deg,var(--aurora1),var(--aurora2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.section-sub{font-size:1rem;color:var(--text-muted);line-height:1.7;max-width:500px;font-weight:300;}
+
+/* APPS GRID */
+.apps-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+  gap:1.5rem;margin-top:3.5rem;
+}
+.app-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:24px;padding:2rem;
+  backdrop-filter:blur(12px);
+  transition:border-color 0.3s,transform 0.3s,background 0.3s;
+  position:relative;overflow:hidden;cursor:none;
+}
+.app-card::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 80% 20%,rgba(124,92,252,0.08),transparent 60%);
+  opacity:0;transition:opacity 0.4s;
+}
+.app-card:hover{border-color:rgba(124,92,252,0.4);transform:translateY(-6px);background:rgba(255,255,255,0.06);}
+.app-card:hover::after{opacity:1;}
+.app-card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.5rem;}
+.app-icon{
+  width:58px;height:58px;border-radius:16px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.6rem;flex-shrink:0;
+  border:1px solid var(--border);
+}
+.app-badge{
+  font-size:0.68rem;font-weight:700;
+  padding:0.3rem 0.75rem;
+  border-radius:100px;
+  letter-spacing:0.06em;text-transform:uppercase;
+}
+.badge-live{background:rgba(0,212,170,0.12);color:var(--aurora2);border:1px solid rgba(0,212,170,0.25);}
+.badge-new{background:rgba(124,92,252,0.12);color:#c4b5fd;border:1px solid rgba(124,92,252,0.25);}
+.badge-soon{background:rgba(255,217,61,0.12);color:#fcd34d;border:1px solid rgba(255,217,61,0.25);}
+.app-card h3{
+  font-family:'Clash Display',sans-serif;
+  font-size:1.2rem;font-weight:600;
+  margin-bottom:0.6rem;color:var(--text);
+}
+.app-card p{font-size:0.875rem;color:var(--text-muted);line-height:1.65;margin-bottom:1.5rem;}
+.app-link{
+  display:inline-flex;align-items:center;gap:0.4rem;
+  font-size:0.82rem;font-weight:700;
+  color:var(--aurora2);text-decoration:none;
+  transition:gap 0.2s;
+}
+.app-link:hover{gap:0.7rem;}
+.app-link::after{content:'→';}
+
+/* ABOUT */
+.about-wrap{
+  display:grid;grid-template-columns:1fr 1fr;gap:5rem;
+  align-items:center;margin-top:3.5rem;
+}
+.about-visual{
+  position:relative;display:flex;align-items:center;justify-content:center;
+}
+.about-circle{
+  width:320px;height:320px;border-radius:50%;
+  background:linear-gradient(135deg,rgba(124,92,252,0.15),rgba(0,212,170,0.1));
+  border:1px solid rgba(124,92,252,0.25);
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:0.4rem;
+  position:relative;
+}
+.about-circle::before{
+  content:'';position:absolute;inset:-2px;border-radius:50%;
+  background:linear-gradient(135deg,var(--aurora1),var(--aurora2),transparent,var(--aurora1));
+  z-index:-1;opacity:0.3;animation:rotateBorder 8s linear infinite;
+}
+@keyframes rotateBorder{to{transform:rotate(360deg);}}
+.about-circle .big-num{
+  font-family:'Clash Display',sans-serif;
+  font-size:5rem;font-weight:700;line-height:1;
+  background:linear-gradient(135deg,var(--aurora1),var(--aurora2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.about-circle small{font-size:0.8rem;color:var(--text-muted);letter-spacing:0.08em;text-transform:uppercase;}
+.float-tag{
+  position:absolute;
+  background:rgba(255,255,255,0.06);
+  backdrop-filter:blur(12px);
+  border:1px solid var(--border-hover);
+  border-radius:14px;
+  padding:0.6rem 1rem;
+  font-size:0.78rem;font-weight:500;color:var(--text);
+  white-space:nowrap;
+}
+.ft1{top:10px;right:-30px;}
+.ft2{bottom:30px;left:-40px;}
+.ft3{top:50%;right:-50px;transform:translateY(-50%);}
+
+.about-text p{
+  font-size:1rem;font-weight:300;
+  color:var(--text-muted);line-height:1.85;
+  margin-bottom:1.2rem;
+}
+.about-text p strong{color:var(--text);font-weight:500;}
+.skills-list{margin-top:2rem;}
+.skill-item{margin-bottom:1.1rem;}
+.skill-meta{display:flex;justify-content:space-between;margin-bottom:0.5rem;}
+.skill-meta span:first-child{font-size:0.85rem;font-weight:500;}
+.skill-meta span:last-child{font-size:0.78rem;color:var(--text-dim);}
+.skill-track{height:4px;background:rgba(255,255,255,0.06);border-radius:100px;overflow:hidden;}
+.skill-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--aurora1),var(--aurora2));transition:width 1.2s ease;}
+
+/* PRIVACY */
+#privacy{background:linear-gradient(180deg,var(--bg2),var(--bg));border-radius:32px;margin:0 1rem;padding:5rem 3rem;}
+.policy-wrap{
+  display:grid;grid-template-columns:220px 1fr;gap:3rem;margin-top:3rem;
+}
+.policy-toc{position:sticky;top:6rem;align-self:start;}
+.policy-toc h4{font-size:0.7rem;font-weight:700;color:var(--text-dim);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:1rem;}
+.policy-toc a{
+  display:flex;align-items:center;gap:0.5rem;
+  font-size:0.82rem;color:var(--text-muted);text-decoration:none;
+  padding:0.5rem 0;
+  border-left:2px solid transparent;
+  padding-left:0.8rem;
+  transition:color 0.2s,border-color 0.2s;
+}
+.policy-toc a:hover{color:var(--aurora2);border-color:var(--aurora2);}
+.updated-pill{
+  display:inline-flex;align-items:center;gap:0.4rem;
+  background:rgba(0,212,170,0.1);
+  border:1px solid rgba(0,212,170,0.2);
+  color:var(--aurora2);
+  font-size:0.72rem;font-weight:600;
+  padding:0.35rem 0.9rem;border-radius:100px;
+  letter-spacing:0.06em;margin-bottom:2rem;
+}
+.policy-section{margin-bottom:2.5rem;padding-bottom:2.5rem;border-bottom:1px solid var(--border);}
+.policy-section:last-child{border-bottom:none;}
+.policy-section h3{
+  font-family:'Clash Display',sans-serif;
+  font-size:1.15rem;font-weight:600;
+  color:var(--text);margin-bottom:0.9rem;
+  display:flex;align-items:center;gap:0.6rem;
+}
+.policy-section h3::before{
+  content:'';width:6px;height:6px;border-radius:50%;
+  background:var(--aurora1);flex-shrink:0;
+}
+.policy-section p,.policy-section li{
+  font-size:0.9rem;line-height:1.85;
+  color:var(--text-muted);margin-bottom:0.5rem;
+}
+.policy-section ul{padding-left:1.4rem;}
+.policy-section li{margin-bottom:0.4rem;}
+.policy-section a{color:var(--aurora2);text-decoration:none;}
+.policy-section a:hover{text-decoration:underline;}
+.info-box{
+  background:rgba(124,92,252,0.08);
+  border:1px solid rgba(124,92,252,0.2);
+  border-radius:12px;padding:1rem 1.2rem;margin-top:1rem;
+}
+.info-box p{color:rgba(200,190,255,0.85)!important;margin:0;font-size:0.875rem!important;}
+
+/* CONTACT */
+.contact-wrap{margin-top:3.5rem;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;}
+.contact-big{
+  font-family:'Clash Display',sans-serif;
+  font-size:clamp(2.5rem,5vw,4.5rem);
+  font-weight:700;line-height:0.95;letter-spacing:-0.04em;
+  margin-bottom:1.5rem;
+}
+.contact-big span{
+  background:linear-gradient(135deg,var(--aurora1),var(--aurora2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.contact-sub{font-size:1rem;color:var(--text-muted);line-height:1.7;font-weight:300;}
+.contact-items{display:flex;flex-direction:column;gap:1rem;}
+.contact-card{
+  display:flex;align-items:center;gap:1.2rem;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:18px;padding:1.2rem 1.5rem;
+  text-decoration:none;color:var(--text);
+  backdrop-filter:blur(12px);cursor:none;
+  transition:border-color 0.3s,transform 0.3s,background 0.3s;
+}
+.contact-card:hover{border-color:rgba(124,92,252,0.4);transform:translateX(6px);background:var(--surface-hover);}
+.contact-icon{
+  width:46px;height:46px;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.2rem;flex-shrink:0;border:1px solid var(--border);
+  background:rgba(255,255,255,0.04);
+}
+.contact-card-text span{font-size:0.9rem;font-weight:500;display:block;margin-bottom:0.2rem;}
+.contact-card-text small{font-size:0.78rem;color:var(--text-muted);}
+.contact-arrow{margin-left:auto;color:var(--text-dim);font-size:1.1rem;transition:transform 0.2s,color 0.2s;}
+.contact-card:hover .contact-arrow{transform:translateX(3px);color:var(--aurora2);}
+
+/* FOOTER */
+footer{
+  max-width:1100px;margin:4rem auto 0;padding:2.5rem 2rem;
+  border-top:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;
+}
+.footer-logo{
+  font-family:'Clash Display',sans-serif;font-weight:700;font-size:1rem;
+  background:linear-gradient(135deg,var(--aurora1),var(--aurora2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+footer p{font-size:0.78rem;color:var(--text-dim);}
+.footer-links{display:flex;gap:1.5rem;}
+.footer-links a{font-size:0.78rem;color:var(--text-muted);text-decoration:none;transition:color 0.2s;}
+.footer-links a:hover{color:var(--aurora2);}
+
+/* ANIMATIONS */
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(20px);}
+  to{opacity:1;transform:translateY(0);}
+}
+.reveal{opacity:0;transform:translateY(28px);transition:opacity 0.7s ease,transform 0.7s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  nav{padding:1rem 1.5rem;}
+  .nav-center{display:none;}
+  .stats{grid-template-columns:1fr;}
+  .about-wrap,.contact-wrap{grid-template-columns:1fr;}
+  .about-visual{display:none;}
+  .policy-wrap{grid-template-columns:1fr;}
+  .policy-toc{display:none;}
+  #privacy{padding:3rem 1.5rem;margin:0;}
+  footer{flex-direction:column;align-items:flex-start;}
+  .section{padding:4rem 1.5rem;}
+  .float-tag{display:none;}
+}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<div class="aurora-bg">
+  <div class="aurora-orb orb1"></div>
+  <div class="aurora-orb orb2"></div>
+  <div class="aurora-orb orb3"></div>
+</div>
+
+<nav>
+  <a href="#" class="nav-logo">Rise of Rebels ✦</a>
+  <ul class="nav-center">
+    <li><a href="#apps">Apps</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#privacy">Privacy</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">Let's Talk →</a>
+</nav>
+
+<div class="page">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-eyebrow">
+      <span class="eyebrow-dot"></span>
+      Android Developer · Pune, India · Open to Collaborate
+    </div>
+    <h1 class="hero-name">
+      <span class="line1">Vivek Gaikwad</span>
+      <span class="line2">Builds Apps.</span>
+    </h1>
+    <p class="hero-brand">Rise of Rebels</p>
+    <p class="hero-desc">
+      <strong>9 years</strong> crafting Android experiences loved by <strong>8 lakh+ users</strong>. Indie developer turning bold ideas into products that matter — for India and beyond.
+    </p>
+    <div class="hero-btns">
+      <a href="#apps" class="btn-glow">Explore My Apps</a>
+      <a href="#privacy" class="btn-ghost">Privacy Policy</a>
+    </div>
+    <div class="scroll-hint">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats reveal" style="margin-bottom:6rem;">
+    <div class="stat-card">
+      <div class="stat-num">8L+</div>
+      <div class="stat-label">Total App Installs</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">9 Yrs</div>
+      <div class="stat-label">Android Experience</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">10+</div>
+      <div class="stat-label">Apps Published</div>
+    </div>
+  </div>
+
+  <!-- APPS -->
+  <section class="section" id="apps">
+    <div class="reveal">
+      <p class="section-label">Portfolio</p>
+      <h2 class="section-title">Apps I've <span>Shipped</span></h2>
+      <p class="section-sub">From document scanning to AI-powered tools — built for real users across India.</p>
+    </div>
+    <div class="apps-grid reveal">
+      <div class="app-card">
+        <div class="app-card-top">
+          <div class="app-icon" style="background:rgba(124,92,252,0.12);">📄</div>
+          <span class="app-badge badge-live">Live</span>
+        </div>
+        <h3>Web Scanner Pro</h3>
+        <p>A powerful document scanner with smart PDF tools, multi-page scanning, OCR, cloud sync, and advanced filters. Trusted by lakhs across India.</p>
+        <a href="#" class="app-link">View on Play Store</a>
+      </div>
+      <div class="app-card">
+        <div class="app-card-top">
+          <div class="app-icon" style="background:rgba(0,212,170,0.12);">🧾</div>
+          <span class="app-badge badge-new">New</span>
+        </div>
+        <h3>GST Bill Analyzer</h3>
+        <p>AI-powered GST invoice scanner built for Indian businesses. Scan, verify, and manage bills instantly using Gemini Vision API.</p>
+        <a href="#" class="app-link">View on Play Store</a>
+      </div>
+      <div class="app-card">
+        <div class="app-card-top">
+          <div class="app-icon" style="background:rgba(255,217,61,0.1);">🏠</div>
+          <span class="app-badge badge-soon">Coming Soon</span>
+        </div>
+        <h3>RERA Checker</h3>
+        <p>Instantly verify Maharashtra real estate projects and builder credibility using official RERA registration data. No broker needed.</p>
+        <a href="#" class="app-link">Join Waitlist</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="section" id="about">
+    <div class="reveal">
+      <p class="section-label">About</p>
+      <h2 class="section-title">The <span>Rebel</span> Behind the Code</h2>
+    </div>
+    <div class="about-wrap reveal">
+      <div class="about-visual">
+        <div class="about-circle">
+          <span class="big-num">9+</span>
+          <small>Years Building</small>
+        </div>
+        <div class="float-tag ft1">🇮🇳 Pune, India</div>
+        <div class="float-tag ft2">🚀 8L+ Installs</div>
+        <div class="float-tag ft3">⚡ Android Expert</div>
+      </div>
+      <div class="about-text">
+        <p>Hey, I'm <strong>Vivek Gaikwad</strong> — an Android developer from <strong>Pune, India</strong> with 9 years of turning complex problems into apps people actually enjoy using.</p>
+        <p>I founded <strong>Rise of Rebels</strong> as my indie developer brand — a space to ship products I truly believe in, target underserved Indian markets, and build something meaningful beyond a 9-to-5.</p>
+        <p>My stack combines modern Android development with <strong>AI capabilities</strong> — Gemini API, ML Kit, CameraX, Firebase — to build apps that feel magical but solve real, everyday problems.</p>
+        <div class="skills-list">
+          <div class="skill-item">
+            <div class="skill-meta"><span>Android / Kotlin</span><span>95%</span></div>
+            <div class="skill-track"><div class="skill-fill" style="width:95%"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-meta"><span>Jetpack Compose</span><span>88%</span></div>
+            <div class="skill-track"><div class="skill-fill" style="width:88%"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-meta"><span>Firebase & Cloud</span><span>85%</span></div>
+            <div class="skill-track"><div class="skill-fill" style="width:85%"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-meta"><span>Gemini API / ML Kit</span><span>80%</span></div>
+            <div class="skill-track"><div class="skill-fill" style="width:80%"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-meta"><span>CameraX / MediaPipe</span><span>82%</span></div>
+            <div class="skill-track"><div class="skill-fill" style="width:82%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRIVACY -->
+  <section id="privacy" style="max-width:1100px;margin:0 auto 4rem;padding:5rem 3rem;background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:32px;">
+    <div class="reveal">
+      <p class="section-label">Legal</p>
+      <h2 class="section-title">Privacy <span>Policy</span></h2>
+      <p class="section-sub">Your privacy matters. Here's exactly what we collect, why, and how we protect it.</p>
+    </div>
+    <div class="policy-wrap reveal">
+      <div class="policy-toc">
+        <h4>On this page</h4>
+        <a href="#p1">Overview</a>
+        <a href="#p2">Data We Collect</a>
+        <a href="#p3">How We Use Data</a>
+        <a href="#p4">Third Parties</a>
+        <a href="#p5">Data Storage</a>
+        <a href="#p6">Children</a>
+        <a href="#p7">Your Rights</a>
+        <a href="#p8">Policy Changes</a>
+        <a href="#p9">Contact</a>
+      </div>
+      <div>
+        <span class="updated-pill">✦ Last updated: May 2026</span>
+
+        <div class="policy-section" id="p1">
+          <h3>Overview</h3>
+          <p>This Privacy Policy applies to all applications developed and published by <strong style="color:var(--text)">Vivek Gaikwad</strong> under the brand <strong style="color:var(--text)">Rise of Rebels</strong>. By using our apps, you agree to the terms described here. We are committed to protecting your privacy and handling your data with full transparency.</p>
+        </div>
+
+        <div class="policy-section" id="p2">
+          <h3>Data We Collect</h3>
+          <p>Depending on the app you use, we may collect:</p>
+          <ul>
+            <li><strong style="color:var(--text)">Device information</strong> — model, OS version, unique device identifiers</li>
+            <li><strong style="color:var(--text)">Usage data</strong> — features used, session duration, crash reports</li>
+            <li><strong style="color:var(--text)">Camera/storage access</strong> — only for scanning apps, with your explicit permission</li>
+            <li><strong style="color:var(--text)">Account data</strong> — email address if you sign in via Google</li>
+            <li><strong style="color:var(--text)">Analytics</strong> — anonymised usage patterns via Firebase Analytics</li>
+          </ul>
+          <div class="info-box">
+            <p>🔒 We never sell your personal data to any third party. Ever.</p>
+          </div>
+        </div>
+
+        <div class="policy-section" id="p3">
+          <h3>How We Use Your Data</h3>
+          <p>We use collected data solely to:</p>
+          <ul>
+            <li>Operate and continuously improve our apps</li>
+            <li>Diagnose technical issues and fix bugs quickly</li>
+            <li>Personalise your in-app experience</li>
+            <li>Send important service notifications (not marketing spam)</li>
+            <li>Comply with applicable legal obligations</li>
+          </ul>
+        </div>
+
+        <div class="policy-section" id="p4">
+          <h3>Third-Party Services</h3>
+          <p>Our apps use these trusted third-party services, each governed by their own policies:</p>
+          <ul>
+            <li><a href="https://policies.google.com/privacy" target="_blank">Google Play Services</a></li>
+            <li><a href="https://firebase.google.com/support/privacy" target="_blank">Firebase (Analytics, Crashlytics, Auth)</a></li>
+            <li><a href="https://policies.google.com/privacy" target="_blank">Google AdMob</a> — for free, ad-supported apps</li>
+            <li><a href="https://ai.google.dev/gemini-api/terms" target="_blank">Google Gemini API</a> — powering AI features</li>
+          </ul>
+        </div>
+
+        <div class="policy-section" id="p5">
+          <h3>Data Storage & Security</h3>
+          <p>Your data is stored securely on Google Firebase servers with industry-standard encryption in transit and at rest. Documents scanned in our apps are processed locally on your device wherever possible and are never uploaded without your explicit consent.</p>
+        </div>
+
+        <div class="policy-section" id="p6">
+          <h3>Children's Privacy</h3>
+          <p>Our apps are not directed at children under 13. We do not knowingly collect personal data from children. If you believe a child has provided us with their data, please contact us immediately and we will delete it without delay.</p>
+        </div>
+
+        <div class="policy-section" id="p7">
+          <h3>Your Rights</h3>
+          <p>You have the right to:</p>
+          <ul>
+            <li>Access the personal data we hold about you</li>
+            <li>Request correction or deletion of your data</li>
+            <li>Withdraw your consent at any time</li>
+            <li>Lodge a complaint with your local data protection authority</li>
+          </ul>
+        </div>
+
+        <div class="policy-section" id="p8">
+          <h3>Changes to This Policy</h3>
+          <p>We may update this policy periodically. When we do, the "Last updated" date at the top of this page will change. Continued use of our apps after changes means you accept the revised policy. We encourage you to review it regularly.</p>
+        </div>
+
+        <div class="policy-section" id="p9">
+          <h3>Contact Us</h3>
+          <p>For any privacy-related questions, reach out directly:</p>
+          <p style="margin-top:0.8rem;"><strong style="color:var(--text)">Vivek Gaikwad</strong> · Rise of Rebels<br>
+          Pune, Maharashtra, India<br>
+          <a href="mailto:vivek@riseofrebels.in">vivek@riseofrebels.in</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="section" id="contact">
+    <div class="contact-wrap reveal">
+      <div>
+        <p class="section-label">Contact</p>
+        <h2 class="contact-big">Got an<br><span>idea?</span><br>Let's build.</h2>
+        <p class="contact-sub">Open to collaborations, feedback on my apps, or just a great conversation about Android, AI, or the Indian startup ecosystem.</p>
+      </div>
+      <div class="contact-items">
+        <a href="mailto:vivek@riseofrebels.in" class="contact-card">
+          <div class="contact-icon">✉️</div>
+          <div class="contact-card-text">
+            <span>Email Me</span>
+            <small>vivek@riseofrebels.in</small>
+          </div>
+          <span class="contact-arrow">→</span>
+        </a>
+        <a href="https://play.google.com/store/apps" target="_blank" class="contact-card">
+          <div class="contact-icon">▶️</div>
+          <div class="contact-card-text">
+            <span>Google Play</span>
+            <small>Rise of Rebels — Developer Page</small>
+          </div>
+          <span class="contact-arrow">→</span>
+        </a>
+        <a href="https://github.com" target="_blank" class="contact-card">
+          <div class="contact-icon">🐙</div>
+          <div class="contact-card-text">
+            <span>GitHub</span>
+            <small>Open source projects</small>
+          </div>
+          <span class="contact-arrow">→</span>
+        </a>
+        <a href="https://linkedin.com" target="_blank" class="contact-card">
+          <div class="contact-icon">💼</div>
+          <div class="contact-card-text">
+            <span>LinkedIn</span>
+            <small>Connect professionally</small>
+          </div>
+          <span class="contact-arrow">→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">Rise of Rebels ✦</div>
+    <p>© 2026 Vivek Gaikwad · Pune, India · All rights reserved</p>
+    <div class="footer-links">
+      <a href="#privacy">Privacy Policy</a>
+      <a href="#apps">Apps</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx+'px';cursor.style.top=my+'px';});
+function animRing(){rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animRing);}
+animRing();
+document.querySelectorAll('a,button,.app-card,.stat-card,.contact-card').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cursor.classList.add('hovering');ring.classList.add('hovering');});
+  el.addEventListener('mouseleave',()=>{cursor.classList.remove('hovering');ring.classList.remove('hovering');});
+});
+
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');}});
+},{threshold:0.12});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>
